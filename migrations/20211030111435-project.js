@@ -8,32 +8,28 @@ module.exports = {
      * Example:
      * await queryInterface.createTable("users", { id: Sequelize.INTEGER });
      */
-    await queryInterface.createTable("companies", { 
+    await queryInterface.createTable("projects", { 
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
       },
-      companyName: {
+      title: {
         type: Sequelize.STRING,
-        allowNull: false,
-      },
-      companySite: {
-        type: Sequelize.STRING,
-      },
-      startDate: {
-        type: Sequelize.DATEONLY,
-        allowNull: false,
-      },
-      endDate: {
-        type: Sequelize.DATEONLY,
-      },
-      position: {
-        type: Sequelize.STRING,
-        allowNull: false,
+        unique: true,
       },
       desc: {
         type: Sequelize.STRING
+      },
+      link: {
+        type: Sequelize.STRING
+      },
+      image: {
+        type: Sequelize.TEXT
+      },
+      lang: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -51,6 +47,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable("users");
      */
-    await queryInterface.dropTable("companies");
+     await queryInterface.dropTable("projects");
   }
 };
