@@ -22,9 +22,11 @@ app.use(express.urlencoded({ extended: true }));
 db.sequelize.sync()
 
 // import routes
-const user = require('./routes/user.route')
-const profile = require('./routes/profile.route')
-const company = require('./routes/company.route')
+const user = require("./routes/user.route")
+const profile = require("./routes/profile.route")
+const company = require("./routes/company.route")
+const project = require("./routes/project.route")
+
 
 // Route
 app.get("/", (req, res) => {
@@ -36,6 +38,7 @@ app.get("/", (req, res) => {
 app.use("/user", user)
 app.use("/profile", profile)
 app.use("/company", company)
+app.use("/project", project)
 
 // set port
 const port = process.env.PORT || 5000;

@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const bcrypt = require("bcrypt");
 
@@ -8,16 +8,16 @@ module.exports = {
      * Add seed commands here.
      *
      * Example:
-     * await queryInterface.bulkInsert('People', [{
-     *   name: 'John Doe',
+     * await queryInterface.bulkInsert("People", [{
+     *   name: "John Doe",
      *   isBetaMember: false
      * }], {});
     */
-    await queryInterface.bulkInsert('Users', [{
+    await queryInterface.bulkInsert("Users", [{
       level: 5,
-      username: 'admin',
-      email: 'admin@test.com',
-      password: bcrypt.hashSync('adminHuman123', 10),
+      username: "admin",
+      email: "admin@test.com",
+      password: bcrypt.hashSync("adminHuman123", 10),
       createdAt: new Date(),
       updatedAt: new Date()
     }], {});
@@ -28,8 +28,8 @@ module.exports = {
      * Add commands to revert seed here.
      *
      * Example:
-     * await queryInterface.bulkDelete('People', null, {});
+     * await queryInterface.bulkDelete("People", null, {});
      */
-    await queryInterface.bulkDelete('Users', null, {});
+    await queryInterface.bulkDelete("Users", null, {});
   }
 };

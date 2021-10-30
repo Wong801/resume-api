@@ -1,6 +1,7 @@
 class Company {
-  constructor(companyName, startDate, endDate, position, desc) {
+  constructor(companyName, companySite, startDate, endDate, position, desc) {
     this.companyName = companyName,
+    this.companySite = companySite
     this.startDate = startDate,
     this.endDate = endDate,
     this.position = position,

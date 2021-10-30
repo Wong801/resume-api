@@ -9,31 +9,29 @@ let response
 
 module.exports = {
   getProfile: async (req, res) => {
-    if(res.locals.userData) {
-      await Profiles.findAll({
-        attributes: [
-          'id',
-          'name',
-          'bornDate',
-          'bornPlace',
-          'image',
-          'age',
-          'lastPosition',
-          'lastCompany'
-        ]
-      }).then(data => {
-        msg = "Success"
-        response = new Response(msg, data)
-        return res.status(200).json(response)
-      }).catch(() => {
-        msg = "Error"
-        response = new Response(msg, null, false)
-        return res.status(500).json(response)
-      })
-    }
+    await Profiles.findAll({
+      attributes: [
+        "id",
+        "name",
+        "bornDate",
+        "bornPlace",
+        "image",
+        "age",
+        "lastPosition",
+        "lastCompany"
+      ]
+    }).then(data => {
+      msg = "Success"
+      response = new Response(msg, data)
+      return res.status(200).json(response)
+    }).catch(() => {
+      msg = "Error"
+      response = new Response(msg, null, false)
+      return res.status(500).json(response)
+    })
   },
   postProfile: async (req, res) => {
-    if(res.locals.userData) {
+    if(res.locals.userData && res.locals.userData.level === 5) {
       const profile = new Profile(
         req.body.name || null, 
         req.body.bornDate || null, 
@@ -51,14 +49,17 @@ module.exports = {
           return res.status(200).json(response)
         })
         .catch(err => {
-          msg = err.errors[0]
+          msg = err.errors[0].message
           response = new Response(msg, null, false)
           return res.status(400).json(response)
         })
     }
+    msg = "you're not authorized to do that"
+    response = new Response(msg, null, false)
+    return res.status(401).json(response)
   },
   updateProfile: async (req, res) => {
-    if(res.locals.userData) {
+    if(res.locals.userData && res.locals.userData.level === 5) {
       const profile = new Profile(
         req.body.name || null, 
         req.body.bornDate || null, 
@@ -89,10 +90,20 @@ module.exports = {
           data.set(obj)
           data.save()
           obj = {}
+        })
+        .catch(err => {
+          msg = err.errors[0].message
+          response = new Response(msg, null, false)
+          return res.status(400).json(response)
+        })
+        .finally(() => {
           msg = "Profile data successfully edited"
           response = new Response(msg, null)
           return res.status(200).json(response)
         })
     }
+    msg = "you're not authorized to do that"
+    response = new Response(msg, null, false)
+    return res.status(401).json(response)
   }
 }

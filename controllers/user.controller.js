@@ -31,7 +31,7 @@ module.exports = {
                 username: cred.username,
                 email: cred.email,
                 exp: Math.floor(Date.now() / 1000) + (60 * 60),
-                type: 'Bearer'
+                type: "Bearer"
               },
               process.env.PRIVATE_KEY
             )
@@ -91,8 +91,8 @@ module.exports = {
           }
         })
         .catch(err => {
-          const error = err.errors[0]
-          msg = error.message.match('isEmail') 
+          const error = err.errors[0].message
+          msg = error.message.match("isEmail") 
             ? error.path + " is invalid" 
             : error.path + " is already taken"
           response = new Response(msg, null, false)
@@ -131,13 +131,33 @@ module.exports = {
                 cred.save()
                 msg = "Password successfully changed"
                 response = new Response(msg, null)
-                return res.json(response)
+                return res.status(200).json(response)
               })
             }
             msg = "Invalid password"
             response = new Response(msg, null, false)
             return res.status(400).json(response)
           })
+      })
+    }
+  },
+  logout: async (req, res) => {
+    if(res.locals.userData) {
+      const cred = res.locals.userData
+      await Users.findOne({
+        where: {
+          username: cred.username
+        }
+      }).then(data => {
+        data.set({ rememberedToken: null })
+        data.save()
+        msg = "Logout Success"
+        response = new Response(msg, null)
+        return res.status(200).json(response)
+      }).catch(() => {
+        msg = "Error"
+        response = new Response(msg, null)
+        return res.status(500).json(response)
       })
     }
   }
