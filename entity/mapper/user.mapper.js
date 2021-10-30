@@ -1,4 +1,4 @@
-class Person {
+class User {
   constructor(username, email, password) {
     this.username = username,
     this.email = email,
@@ -6,4 +6,4 @@ class Person {
   }
 }
 
-module.exports = Person;
+module.exports = User;
