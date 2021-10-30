@@ -23,6 +23,8 @@ db.sequelize.sync()
 
 // import routes
 const user = require('./routes/user.route')
+const profile = require('./routes/profile.route')
+const company = require('./routes/company.route')
 
 // Route
 app.get("/", (req, res) => {
@@ -32,6 +34,8 @@ app.get("/", (req, res) => {
 })
 
 app.use("/user", user)
+app.use("/profile", profile)
+app.use("/company", company)
 
 // set port
 const port = process.env.PORT || 5000;

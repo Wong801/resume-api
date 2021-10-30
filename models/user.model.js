@@ -5,6 +5,9 @@ module.exports = (sequelize, Sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
+    level: {
+      type: Sequelize.INTEGER(2),
+    },
     username: {
       type: Sequelize.STRING,
       unique: true,
@@ -18,6 +21,9 @@ module.exports = (sequelize, Sequelize) => {
     },
     password: {
       type: Sequelize.STRING
+    },
+    rememberedToken: {
+      type: Sequelize.TEXT
     },
     createdAt: {
       type: Sequelize.DATE

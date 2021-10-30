@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const Person = require("../entity/mapper/user.mapper");
+const User = require("../entity/mapper/user.mapper");
 const Response = require("../entity/mapper/response.mapper");
 const db = require("../models");
 
@@ -11,7 +11,7 @@ let response
 
 module.exports = {
   login: async (req, res) => {
-    const user = new Person(
+    const user = new User(
       req.body.username || null, 
       req.body.email || null, 
       req.body.password || null
@@ -30,10 +30,13 @@ module.exports = {
                 level: cred.level,
                 username: cred.username,
                 email: cred.email,
-                exp: Math.floor(Date.now() / 1000) + (60 * 60)
+                exp: Math.floor(Date.now() / 1000) + (60 * 60),
+                type: 'Bearer'
               },
               process.env.PRIVATE_KEY
             )
+            cred.set({ rememberedToken: token })
+            cred.save()
             msg = "Login Success"
             const data = {
               token
@@ -45,10 +48,14 @@ module.exports = {
           response = new Response(msg, null, false)
           return res.status(401).json(response)
         })
+    }).catch(() => {
+      const msg = "User not found"
+      const response = new Response(msg, null, false)
+      return res.status(404).json(response)
     })
   },
   register: async (req, res) => {
-    const user = new Person(
+    const user = new User(
       req.body.username || null, 
       req.body.email || null, 
       req.body.password || null
@@ -92,5 +99,46 @@ module.exports = {
           return res.json(response)
         })
     })
+  },
+  changePassword: async (req, res) => {
+    if(res.locals.userData) {
+      const decoded = res.locals.userData
+
+      const user = new User(
+        decoded.username || null, 
+        decoded.email || null, 
+        req.body.password || null
+      )
+      
+      await Users.findOne({
+        where: {
+          username: user.username
+        }
+      }).then(cred => {
+        bcrypt.compare(user.password, cred.password)
+          .then(success => {
+            if(success) {
+              return bcrypt.hash(req.body.newPassword, 10, (err, hash) => {
+                if(err) {
+                  msg = "Error"
+                  response = new Response(msg, null, false)
+                  return res.status(500).json(response)
+                }
+                cred.set({ 
+                  password: hash,
+                  rememberedToken: null 
+                })
+                cred.save()
+                msg = "Password successfully changed"
+                response = new Response(msg, null)
+                return res.json(response)
+              })
+            }
+            msg = "Invalid password"
+            response = new Response(msg, null, false)
+            return res.status(400).json(response)
+          })
+      })
+    }
   }
 }
